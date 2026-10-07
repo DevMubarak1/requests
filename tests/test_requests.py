@@ -1520,6 +1520,11 @@ class TestRequests:
         assert list(chunks) == [b"the content"]
 
         r = requests.Response()
+        r.raw = io.BytesIO(b"the content\nsome more")
+        lines = r.iter_lines(chunk_size=None)
+        assert list(lines) == [b"the content", b"some more"]
+
+        r = requests.Response()
         r.raw = io.BytesIO(b"the content")
         with pytest.raises(TypeError):
             chunks = r.iter_content("1024")
